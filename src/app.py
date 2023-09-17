@@ -107,32 +107,49 @@ def starship_get(starship_id):
 
 
 # POST Methods
-@app.route("/users/favorites/planets/<int:planet_id>", methods=["POST"])
+@app.route("/users", methods=["POST"])
+def add_user():
+    response_body = request.get_json()
+    data = request.json
+    user = User(
+        username=data["username"],
+        password=data["password"],
+        firstname=data["firstname"],
+        lastname=data["lastname"],
+        email=data["email"],
+        is_active=True,
+    )
+    db.session.add(user)
+    db.session.commit()
+    return {"message": f"user {user.username} has been created successfully."}
+    return jsonify(response_body), 200
+
+@app.route("/users/favorites/planets", methods=["POST"])
 def add_planets():
     response_body = request.get_json()
-    # data = request.json
-    # planet = Planets(
-    #     name=data["name"],
-    #     rotation_period=data["rotation_period"],
-    #     orbital_period=data["orbital_period"],
-    #     diameter=data["diameter"],
-    #     climate=data["climate"],
-    #     gravity=data["gravity"],
-    #     terrain=data["terrain"],
-    #     population=data["population"],
-    # )
-    # db.session.add(planet)
-    # db.session.commit()
-    # return {"message": f"planet {planet.name} has been created successfully."}
+    data = request.json
+    planet = Planets(
+        name=data["name"],
+        rotation_period=data["rotation_period"],
+        orbital_period=data["orbital_period"],
+        diameter=data["diameter"],
+        climate=data["climate"],
+        gravity=data["gravity"],
+        terrain=data["terrain"],
+        population=data["population"],
+    )
+    db.session.add(planet)
+    db.session.commit()
+    return {"message": f"planet {planet.name} has been created successfully."}
     return jsonify(response_body), 200
 
 
-@app.route("/users/people/<int:people_id>", methods=["POST"])
+@app.route("/users/people", methods=["POST"])
 def add_people():
     response_body = request.get_json()
 
 
-@app.route("/users/startships/<int:startship_id>", methods=["POST"])
+@app.route("/users/startships", methods=["POST"])
 def add_startships():
     response_body = request.get_json()
 
