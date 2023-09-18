@@ -59,5 +59,27 @@
         "username": "username"
         }
 
+# Delete a Favorite person for a user
+
+    - [DELETE] /people/<int:people_id>
+        * send JSON with the username where the people favorite will be delete
+        {
+        "username": "username"
+        }
+# Delete a Favorite planet for a user
+
+    - [DELETE] /planets/<int:planet_id>
+        * send JSON with the username where the planet favorite will be delete
+        {
+        "username": "username"
+        }
+
+# Delete a Favorite Starship for a user
+
+    - [DELETE] /startships/<int:starship_id>
+        * send JSON with the username where the starship favorite will be delete
+        {
+        "username": "username"
+        }
 
     
