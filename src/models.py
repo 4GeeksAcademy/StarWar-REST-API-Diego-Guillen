@@ -183,14 +183,14 @@ class Planets(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            # "rotation_period": self.rotation_period,
-            # "orbital_period": self.orbital_period,
-            # "diameter": self.diameter,
-            # "climate": self.climate,
-            # "gravity": self.gravity,
-            # "terrain": self.terrain,
-            # "population": self.population,
-            # do not serialize the password, its a security breach
+            "rotation_period": self.rotation_period,
+            "orbital_period": self.orbital_period,
+            "diameter": self.diameter,
+            "climate": self.climate,
+            "gravity": self.gravity,
+            "terrain": self.terrain,
+            "population": self.population,
+            #do not serialize the password, its a security breach
         }
 
 
@@ -233,12 +233,12 @@ class Starships(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            # "model": self.model,
-            # "manufacturer": self.manufacturer,
-            # "length": self.length,
-            # "max_atmosphering_speed": self.max_atmosphering_speed,
-            # "crew": self.crew,
-            # "passengers": self.passengers,
-            # "startship_class": self.starship_class,
-            # do not serialize the password, its a security breach
+            "model": self.model,
+            "manufacturer": self.manufacturer,
+            "length": self.length,
+            "max_atmosphering_speed": self.max_atmosphering_speed,
+            "crew": self.crew,
+            "passengers": self.passengers,
+            "startship_class": self.starship_class,
+            #do not serialize the password, its a security breach
         }
