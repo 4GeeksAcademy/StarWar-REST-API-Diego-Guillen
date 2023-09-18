@@ -186,7 +186,7 @@ def add_user():
         db.session.commit()
         return {"message": f"user {user.username} has been created successfully."}, 200
     except Exception as error:
-        return {"message": f"user {user.username} has not been created successfully."}, 400  
+        return {"message": f"user {user.username} has not been created successfully. err = {error}"}, 400  
     
    
 @app.route("/users/favorites/", methods=["POST"])
@@ -238,7 +238,7 @@ def add_planets(planet_id):
         db.session.commit()
         return {"message": f"planet {current_favorite.planets} has been added successfully."}, 200
     except Exception as error:
-        return {"message": f"planet {current_favorite.planets} has not been added successfully."}, 400
+        return {"message": f"planet {current_favorite.planets} has not been added successfully. err = {error}"}, 400
     
 
 
@@ -264,7 +264,7 @@ def add_people(people_id):
         db.session.commit()
         return {"message": f"people {current_favorite.people} has been added successfully."}, 200
     except Exception as error:
-        return {"message": f"people {current_favorite.people} has not been added successfully."}, 400
+        return {"message": f"people {current_favorite.people} has not been added successfully. err = {error}"}, 400
 
 
 @app.route("/users/favorites/starships/<int:starship_id>", methods=["POST"])
@@ -289,26 +289,73 @@ def add_starships(starship_id):
         db.session.commit()
         return {"message": f"startships {current_favorite.starships} has been added successfully."}, 200
     except Exception as error:
-        return {"message": f"startships {current_favorite.starships} has not been added successfully."}, 400
+        return {"message": f"startships {current_favorite.starships} has not been added successfully. err = {error}"}, 400
 
 
 # DELETE Methods
-@app.route("/planet/<int:planet_id>", methods=["DELETE"])
-def delete_planet(position):
-    print("delete planets in position " + position)
-    return jsonify(position)
 
+@app.route("/planets/<int:planet_id>", methods=["DELETE"])
+def delete_planet(planet_id):
+    username = request.json.get("username", None)
+    user = User.query.filter_by(username=username).first()
+    if username is None:
+        return {"message": "The request body is missing the username"}, 400
+    favorite=Favorites.query.filter_by(user=user).first()
+    current_favorite = favorite.planets
+    planet_to_delete = Planets.query.filter_by(id=planet_id).first()
+    if planet_to_delete is None:
+        return {"message": f"planet {planet_id} doesn't exist."}, 400
+    if planet_to_delete not in current_favorite:
+        return {"message": f"people {planet_to_delete} is not in favorites."}, 400
+    current_favorite.remove(planet_to_delete)    
+    try:
+        db.session.commit()
+        return {"message": f"planet {current_favorite} has been deleted successfully."}, 200
+    except Exception as error:
+        return {"message": f"planet {current_favorite} has not been deleted successfully.err = {error}"}, 400
 
 @app.route("/people/<int:people_id>", methods=["DELETE"])
-def delete_person(position):
-    print("delete people in position " + position)
-    return jsonify(position)
+def delete_person(people_id):
+    username = request.json.get("username", None)
+    user = User.query.filter_by(username=username).first()
+    if username is None:
+        return {"message": "The request body is missing the username"}, 400
+    favorite=Favorites.query.filter_by(user=user).first()
+    current_favorite = favorite.people
+    people_to_delete = People.query.filter_by(id=people_id).first()
+    if people_to_delete is None:
+        return {"message": f"people {people_id} doesn't exist."}, 400
+    if people_to_delete not in current_favorite:
+        return {"message": f"people {people_to_delete} is not in favorites."}, 400
+    current_favorite.remove(people_to_delete) 
+    #return {"message": f"people {current_favorite} has been deleted successfully."}, 200   
+    try:
+        db.session.commit()
+        return {"message": f"people {current_favorite} has been deleted successfully."}, 200
+    except Exception as error:
+        return {"message": f"people {current_favorite} has not been deleted successfully.err = {error}"}, 400
 
 
-@app.route("/startships/<int:starships_id>", methods=["DELETE"])
-def delete_startship(position):
-    print("delete starships in position " + position)
-    return jsonify(position)
+@app.route("/starships/<int:starships_id>", methods=["DELETE"])
+def delete_startship(starships_id):
+    username = request.json.get("username", None)
+    user = User.query.filter_by(username=username).first()
+    if username is None:
+        return {"message": "The request body is missing the username"}, 400
+    favorite=Favorites.query.filter_by(user=user).first()
+    current_favorite = favorite.starships
+    startship_to_delete = Starships.query.filter_by(id=starships_id).first()
+    if startship_to_delete is None:
+        return {"message": f"planet {starships_id} doesn't exist."}, 400
+    if startship_to_delete not in current_favorite:
+        return {"message": f"startship {startship_to_delete} is not in favorites."}, 400
+    current_favorite.remove(startship_to_delete) 
+    #return {"message": f"startship {startship_to_delete} has been deleted successfully."}, 200   
+    try:
+        db.session.commit()
+        return {"message": f"startship {current_favorite} has been deleted successfully."}, 200
+    except Exception as error:
+        return {"message": f"startship {current_favorite} has not been deleted successfully.err = {error}"}, 400
 
 
 # this only runs if `$ python src/app.py` is executed
