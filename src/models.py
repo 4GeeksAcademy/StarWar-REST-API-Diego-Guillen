@@ -42,7 +42,7 @@ class User(db.Model):
         self.is_active = is_active
 
     def __repr__(self):
-        return "<User %r>" % self.id
+        return "<User %r>" % self.username
 
     def serialize(self):
         return {

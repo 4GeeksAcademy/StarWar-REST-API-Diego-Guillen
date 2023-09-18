@@ -182,25 +182,51 @@ def add_user():
         return {"message": f"user {user.username} has not been created successfully."}, 400  
     
    
+@app.route("/users/favorites/", methods=["POST"])
+def add_favorites():
+    data = request.get_json()
+    if data is None:
+        return {"message": "The request body is null"}, 400
+    if data["username"] is None:
+        return {"message": "The request body is missing the username"}, 400
+    if data["people_id"] is None:
+        return {"message": "The request body is missing the people_id"}, 400
+    if data["planet_id"] is None:
+        return {"message": "The request body is missing the planet_id"}, 400
+    if data["starship_id"] is None:
+        return {"message": "The request body is missing the starship_id"}, 400
+    if User.query.filter_by(username=data["username"]).first() is None:
+        return {"message": f"user {data['username']} doesn't exist."}, 400    
+    try:
+        user = User.query.filter_by(username=data["username"]).first()
+        #return {"message": f"user is {user}"}, 200
+        favorites = Favorites(user=user)
+        favorites.people = data["people_id"]
+        favorites.planets = data["planet_id"]
+        favorites.starships = data["starship_id"]
+        db.session.add(favorites)
+        db.session.commit()
+        return {"message": f"favorite {favorites.id} has been created successfully."}, 200
+    except Exception as error:
+        return {"message": f"favorite {favorites.id} has not been created successfully."}, 400
 
 @app.route("/users/favorites/planets/<int:planet_id>", methods=["POST"])
-def add_planets(planet_id):
-    body = request.get_json()
+def add_planets(planet_id):    
     username = request.json.get("username", None)
-    planet_body = body.get("planet_id", [])    
-    user_list = User.query.filter_by(username=username).first()
-    if user_list is None:
-        return {"message": f"user {username} doesn't exist."}, 400
-    for x in planet_body:
-        planet_list = Planets.query.filter_by(id=x).first()
-        if planet_list is None:
-            return {"message": f"planet {x} doesn't exist."}, 400     
+    planet_body = planet_id #body.get("planet_id", [])    
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        return {"message": f"user {username} doesn't exist."}, 400        
+    planet = Planets.query.filter_by(id=planet_body).first()
+    if planet is None:
+        return {"message": f"planet {planet_body} doesn't exist."}, 400    
    
-    current_favorite = Favorites.query.filter_by(user=user_list).first()     
-    for x in planet_body:
-        current_favorite.planets.append(Planets.query.filter_by(id=x).first())       
+    current_favorite = Favorites.query.filter_by(user=user).first()     
+   
+    current_favorite.planets.append(Planets.query.filter_by(id=planet_body).first())      
     try:
         #db.session.add(favorite)  
+        #return {"message": f"planet {current_favorite.planets} has been added successfully."}, 200
         db.session.commit()
         return {"message": f"planet {current_favorite.planets} has been added successfully."}, 200
     except Exception as error:
@@ -210,24 +236,23 @@ def add_planets(planet_id):
 
 @app.route("/users/favorites/people/<int:people_id>", methods=["POST"])
 def add_people(people_id):
-    body = request.get_json()
     username = request.json.get("username", None)
-    people_body = body.get("people_id", [])    
+    people_body = people_id#body.get("people_id", [])    
     user_list = User.query.filter_by(username=username).first()
     if user_list is None:
         return {"message": f"user {username} doesn't exist."}, 400
-    for x in people_body:
-        people_list = People.query.filter_by(id=x).first()
-        if people_list is None:
-            return {"message": f"planet {x} doesn't exist."}, 400     
+    person = Planets.query.filter_by(id=people_body).first()
+    if person is None:
+        return {"message": f"planet {people_body} doesn't exist."}, 400     
    
     current_favorite = Favorites.query.filter_by(user=user_list).first()     
-    for x in people_body:
-        current_favorite.people.append(People.query.filter_by(id=x).first())  
+   
+    current_favorite.people.append(People.query.filter_by(id=people_body).first())  
     #return {"message": f"people {current_favorite.people} has been added successfully."}, 200
     #return jsonify(current_favorite.serialize()), 200     
     try:
         #db.session.add(favorite)  
+        #return {"message": f"person {current_favorite.people} has been added successfully."}, 200
         db.session.commit()
         return {"message": f"people {current_favorite.people} has been added successfully."}, 200
     except Exception as error:
@@ -238,18 +263,17 @@ def add_people(people_id):
 def add_starships(starship_id):
     body = request.get_json()
     username = request.json.get("username", None)
-    starships_body = body.get("starship_id", [])    
+    starships_body = starship_id #body.get("starship_id", [])    
     user_list = User.query.filter_by(username=username).first()
     if user_list is None:
         return {"message": f"user {username} doesn't exist."}, 400
-    for x in starships_body:
-        starships_list = Starships.query.filter_by(id=x).first()
-        if starships_list is None:
-            return {"message": f"Starship {x} doesn't exist."}, 400     
+    starship = Planets.query.filter_by(id=starships_body).first()
+    if starship is None:
+        return {"message": f"planet {starships_body} doesn't exist."}, 400     
    
     current_favorite = Favorites.query.filter_by(user=user_list).first()     
-    for x in starships_body:
-        current_favorite.starships.append(Starships.query.filter_by(id=x).first())  
+    
+    current_favorite.starships.append(Starships.query.filter_by(id=starships_body).first())  
     #return {"message": f"starships {starships_body} has been added successfully."}, 200
     #return jsonify(current_favorite.serialize()), 200     
     try:
