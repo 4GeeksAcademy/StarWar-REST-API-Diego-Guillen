@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, People, Planets, Starships
+from models import db, User, People, Planets, Starships, Favorites
 
 # from models import Person
 
@@ -53,9 +53,15 @@ def users_get():
 
 @app.route("/users/favorites", methods=["GET"])
 def favorites_get():
-    response_body = {"msg": "Hello, this is your GET /user/favorites/ response "}
+    #response_body = {"msg": "Hello, this is your GET /user/favorites/ response "}
+    try:
+        favorites = Favorites.query.all()
+       # response_body = [favorite.serialize() for favorite in favorites]
+        return jsonify(favorites[0].serialize()), 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
-    return jsonify(response_body), 200
+   
 
 
 @app.route("/users/favorites/<username>", methods=["GET"])
@@ -121,35 +127,40 @@ def add_user():
     )
     db.session.add(user)
     db.session.commit()
-    return {"message": f"user {user.username} has been created successfully."}
-    return jsonify(response_body), 200
+    return {"message": f"user {user.username} has been created successfully."}, 200
+   
 
-@app.route("/users/favorites/planets", methods=["POST"])
-def add_planets():
-    response_body = request.get_json()
-    data = request.json
-    planet = Planets(
-        name=data["name"],
-        rotation_period=data["rotation_period"],
-        orbital_period=data["orbital_period"],
-        diameter=data["diameter"],
-        climate=data["climate"],
-        gravity=data["gravity"],
-        terrain=data["terrain"],
-        population=data["population"],
-    )
-    db.session.add(planet)
-    db.session.commit()
-    return {"message": f"planet {planet.name} has been created successfully."}
-    return jsonify(response_body), 200
+@app.route("/users/favorites/planets/<int:planet_id>", methods=["POST"])
+def add_planets(planet_id):
+    body = request.get_json()
+    username = request.json.get("username", None)
+    planet_body = body.get("planet_id", [])    
+    user_list = User.query.filter_by(username=username).first()
+    if user_list is None:
+        return {"message": f"user {username} doesn't exist."}, 400
+    for x in planet_body:
+        planet_list = Planets.query.filter_by(id=x).first()
+        if planet_list is None:
+            return {"message": f"planet {x} doesn't exist."}, 400     
+   
+    current_favorite = Favorites.query.filter_by(user=user_list).first()     
+    for x in planet_body:
+        current_favorite.planets.append(Planets.query.filter_by(id=x).first())       
+    try:
+        #db.session.add(favorite)  
+        db.session.commit()
+        return {"message": f"planet {current_favorite.planets} has been added successfully."}, 200
+    except Exception as error:
+        return {"message": f"planet {current_favorite.planets} has not been added successfully."}, 400
+    
 
 
-@app.route("/users/people", methods=["POST"])
+@app.route("/users/favorites/people/<int:person_id>", methods=["POST"])
 def add_people():
     response_body = request.get_json()
 
 
-@app.route("/users/startships", methods=["POST"])
+@app.route("/users/favorites/startships/<int:starship_id>", methods=["POST"])
 def add_startships():
     response_body = request.get_json()
 

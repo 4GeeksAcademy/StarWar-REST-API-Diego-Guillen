@@ -31,7 +31,7 @@ class User(db.Model):
     lastname = db.Column(db.String(50), nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
-    favorites = db.relationship("Favorites", back_populates="user", uselist=False)
+    # favorites = db.relationship("Favorites", back_populates="user", uselist=False)
 
     def __init__(self, username, password, firstname, lastname, email, is_active):
         self.username = username
@@ -42,14 +42,14 @@ class User(db.Model):
         self.is_active = is_active
 
     def __repr__(self):
-        return "<User %r>" % self.username
+        return "<User %r>" % self.id
 
     def serialize(self):
         return {
             "id": self.id,
             "username": self.username,
             "firstname": self.firstname,
-            "lasttname": self.lasttname,
+            "lastname": self.lastname,
             "email": self.email,
             # do not serialize the password, its a security breach
         }
@@ -100,15 +100,15 @@ class People(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "height": self.height,
-            "skin_color": self.skin_color,
-            "hair_color": self.hair_color,
-            "eye_color": self.eye_color,
-            "birth_year": self.birth_year,
-            "gender": self.gender,
-            "home_world": self.home_world,
-            "description": self.description,
-            "starships": self.starships,
+            # "height": self.height,
+            # "skin_color": self.skin_color,
+            # "hair_color": self.hair_color,
+            # "eye_color": self.eye_color,
+            # "birth_year": self.birth_year,
+            # "gender": self.gender,
+            # "home_world": self.home_world,
+            # "description": self.description,
+            # "starships": self.starships,
             # do not serialize the password, its a security breach
         }
 
@@ -118,18 +118,15 @@ class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="favorites")
+    user = db.relationship("User", uselist=False)  # back_populates="favorites")
 
     people = db.relationship("People", secondary=join_table_people)
     planets = db.relationship("Planets", secondary=join_table_planets)
     starships = db.relationship("Starships", secondary=join_table_starships)
 
-    def __init__(self, user, people, planets, starships):
-        super().__init__(user=user)
+    def __init__(self, user):
+        
         self.user = user
-        self.people = people
-        self.planets = planets
-        self.starships = starships
 
     def __repr__(self):
         return "<%r>" % self.user
@@ -137,10 +134,10 @@ class Favorites(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "user_id": self.user_id,
-            "people": self.people,
-            "planets": self.planets,
-            "starships": self.starships,
+            "username": self.user.serialize().get("username"),
+            "people": [person.serialize() for person in self.people],
+            "planets": [planet.serialize() for planet in self.planets],
+            "starships": [starship.serialize() for starship in self.starships],
             # do not serialize the password, its a security breach
         }
 
@@ -186,13 +183,13 @@ class Planets(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "rotation_period": self.rotation_period,
-            "orbital_period": self.orbital_period,
-            "diameter": self.diameter,
-            "climate": self.climate,
-            "gravity": self.gravity,
-            "terrain": self.terrain,
-            "population": self.population,
+            # "rotation_period": self.rotation_period,
+            # "orbital_period": self.orbital_period,
+            # "diameter": self.diameter,
+            # "climate": self.climate,
+            # "gravity": self.gravity,
+            # "terrain": self.terrain,
+            # "population": self.population,
             # do not serialize the password, its a security breach
         }
 
@@ -209,7 +206,17 @@ class Starships(db.Model):
     passengers = db.Column(db.Integer, nullable=False)
     starship_class = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, name, model, manufacturer, length, max_atmosphering_speed, crew, passengers, starship_class):
+    def __init__(
+        self,
+        name,
+        model,
+        manufacturer,
+        length,
+        max_atmosphering_speed,
+        crew,
+        passengers,
+        starship_class,
+    ):
         self.name = name
         self.model = model
         self.manufacturer = manufacturer
@@ -226,12 +233,12 @@ class Starships(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "model": self.model,
-            "manufacturer": self.manufacturer,
-            "length": self.length,
-            "max_atmosphering_speed": self.max_atmosphering_speed,
-            "crew": self.crew,
-            "passengers": self.passengers,
-            "startship_class": self.starship_class,
+            # "model": self.model,
+            # "manufacturer": self.manufacturer,
+            # "length": self.length,
+            # "max_atmosphering_speed": self.max_atmosphering_speed,
+            # "crew": self.crew,
+            # "passengers": self.passengers,
+            # "startship_class": self.starship_class,
             # do not serialize the password, its a security breach
         }
