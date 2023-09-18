@@ -135,9 +135,9 @@ class Favorites(db.Model):
         return {
             "id": self.id,
             "username": self.user.serialize().get("username"),
-            "people": [person.serialize() for person in self.people],
-            "planets": [planet.serialize() for planet in self.planets],
-            "starships": [starship.serialize() for starship in self.starships],
+            "people": [person.serialize()["name"] for person in self.people],
+            "planets": [planet.serialize()["name"] for planet in self.planets],
+            "starships": [starship.serialize()["name"] for starship in self.starships],
             # do not serialize the password, its a security breach
         }
 
