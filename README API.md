@@ -25,7 +25,7 @@
         "email": "email"
         }
 
-# Create a Favorite for a user
+<!-- # Create a Favorite for a user
 
     - [POST] /users/favorites -> create a favorite for a specific user
         * send JSON with below body information
@@ -34,7 +34,7 @@
         "people_id": [people id],
         "planet_id": [planets id],
         "starship_id": [starships id]
-        }
+        } -->
 
 # Add a Favorite person for a user
 
@@ -51,11 +51,13 @@
         "username": "username"
         }
 
-# Add a Favorite starship for a user
+# Add a Favorite Starship for a user
 
     - [POST] /users/favorites/startships/<int:starship_id>
         * send JSON with the username where the starship favorite will be added
         {
         "username": "username"
         }
+
+
     

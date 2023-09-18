@@ -166,6 +166,7 @@ def add_user():
         return {"message": "The request body is missing the email"}, 400  
     if User.query.filter_by(username=data["username"]).first() is not None:
         return {"message": f"user {data['username']} already exists."}, 400
+    
     try:
         user = User(
             username=data["username"],
@@ -177,6 +178,12 @@ def add_user():
         )
         db.session.add(user)
         db.session.commit()
+        favorite= Favorites(user=User.query.filter_by(username=data["username"]).first())
+        favorite.people = []
+        favorite.planets = []
+        favorite.starships = []
+        db.session.add(favorite)
+        db.session.commit()
         return {"message": f"user {user.username} has been created successfully."}, 200
     except Exception as error:
         return {"message": f"user {user.username} has not been created successfully."}, 400  
@@ -184,6 +191,7 @@ def add_user():
    
 @app.route("/users/favorites/", methods=["POST"])
 def add_favorites():
+    return {"message": "Hello, this is your POST /user/favorites/ response "}
     data = request.get_json()
     if data is None:
         return {"message": "The request body is null"}, 400
