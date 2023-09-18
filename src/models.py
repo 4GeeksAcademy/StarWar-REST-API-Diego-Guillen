@@ -100,16 +100,16 @@ class People(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            # "height": self.height,
-            # "skin_color": self.skin_color,
-            # "hair_color": self.hair_color,
-            # "eye_color": self.eye_color,
-            # "birth_year": self.birth_year,
-            # "gender": self.gender,
-            # "home_world": self.home_world,
-            # "description": self.description,
-            # "starships": self.starships,
-            # do not serialize the password, its a security breach
+            "height": self.height,
+            "skin_color": self.skin_color,
+            "hair_color": self.hair_color,
+            "eye_color": self.eye_color,
+            "birth_year": self.birth_year,
+            "gender": self.gender,
+            "home_world": self.home_world,
+            "description": self.description,
+            "starships": self.starships,
+            #do not serialize the password, its a security breach
         }
 
 

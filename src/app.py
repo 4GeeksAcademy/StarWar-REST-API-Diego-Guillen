@@ -47,8 +47,8 @@ def sitemap():
 def users_get():
     user_list = User.query.all()
     # response_body = user_list;
-    response_body = [{"username": str(user)} for user in user_list]
-    return jsonify(response_body), 200
+    response_body = [user.serialize() for user in user_list]
+    return response_body, 200
 
 
 @app.route("/users/favorites", methods=["GET"])
@@ -56,60 +56,96 @@ def favorites_get():
     #response_body = {"msg": "Hello, this is your GET /user/favorites/ response "}
     try:
         favorites = Favorites.query.all()
-       # response_body = [favorite.serialize() for favorite in favorites]
-        return jsonify(favorites[0].serialize()), 200
+        response_body = [favorite.serialize() for favorite in favorites]
+        return response_body, 200
     except Exception as error:
-        return jsonify({"message": str(error)}), 400
-
-   
+        return jsonify({"message": str(error)}), 400   
 
 
 @app.route("/users/favorites/<username>", methods=["GET"])
 def favorites_get_username(username):
-    response_body = {
-        "msg": f"Hello, this is your GET /user/favorites/{username} response "
-    }
-
-    return jsonify(response_body), 200
-
+    # response_body = {
+    #     "msg": f"Hello, this is your GET /user/favorites/{username} response "
+    # }
+    try:
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            return {"message": f"user {username} doesn't exist."}, 400
+        favorites = Favorites.query.filter_by(user=user).first()
+        response_body = favorites.serialize()
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400    
 
 @app.route("/people", methods=["GET"])
 def people_get():
-    response_body = {"msg": "Hello, this is your GET /people response "}
-    return jsonify(response_body), 200
+    #response_body = {"msg": "Hello, this is your GET /people response "}
+    try:
+        people = People.query.all()
+        response_body = [person.serialize() for person in people]
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
 
 @app.route("/people/<int:person_id>", methods=["GET"])
 def person_get(person_id):
-    response_body = {"msg": f"Hello, this is your GET /people/{person_id} response "}
-    return jsonify(response_body), 200
+    #response_body = {"msg": f"Hello, this is your GET /people/{person_id} response "}
+    try:
+        person = People.query.filter_by(id=person_id).first()
+        if person is None:
+            return {"message": f"person {person_id} doesn't exist."}, 400
+        response_body = person.serialize()
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
 
 @app.route("/planets", methods=["GET"])
 def planets_get():
-    response_body = {"msg": "Hello, this is your GET /planets response "}
-    return jsonify(response_body), 200
-
+    #response_body = {"msg": "Hello, this is your GET /planets response "}
+    try:
+        planets = Planets.query.all()
+        response_body = [planet.serialize() for planet in planets]
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
 @app.route("/planets/<int:planet_id>", methods=["GET"])
 def planet_get(planet_id):
-    response_body = {"msg": f"Hello, this is your GET /people/{planet_id} response "}
-    return jsonify(response_body), 200
+    #response_body = {"msg": f"Hello, this is your GET /people/{planet_id} response "}
+    try:
+        planet = Planets.query.filter_by(id=planet_id).first()
+        if planet is None:
+            return {"message": f"planet {planet_id} doesn't exist."}, 400
+        response_body = planet.serialize()
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
 
 @app.route("/starships", methods=["GET"])
 def starships_get():
-    response_body = {"msg": "Hello, this is your GET /planets response "}
-    print("Hello")
-    return jsonify(response_body), 200
+    #response_body = {"msg": "Hello, this is your GET /planets response "}
+    try:
+        starships = Starships.query.all()
+        response_body = [starship.serialize() for starship in starships]
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
 
 @app.route("/starships/<int:starship_id>", methods=["GET"])
 def starship_get(starship_id):
-    response_body = {
-        "msg": f"Hello, this is your GET /starships/{starship_id} response "
-    }
-    return jsonify(response_body), 200
+    # response_body = {"msg": f"Hello, this is your GET /starships/{starship_id} response "}
+    try:
+        starship = Starships.query.filter_by(id=starship_id).first()
+        if starship is None:
+            return {"message": f"starship {starship_id} doesn't exist."}, 400
+        response_body = starship.serialize()
+        return response_body, 200
+    except Exception as error:
+        return jsonify({"message": str(error)}), 400
 
 
 # POST Methods
@@ -225,19 +261,19 @@ def add_starships(starship_id):
 
 
 # DELETE Methods
-@app.route("/planet/<int:position>", methods=["DELETE"])
+@app.route("/planet/<int:planet_id>", methods=["DELETE"])
 def delete_planet(position):
     print("delete planets in position " + position)
     return jsonify(position)
 
 
-@app.route("/people/<int:position>", methods=["DELETE"])
+@app.route("/people/<int:people_id>", methods=["DELETE"])
 def delete_person(position):
     print("delete people in position " + position)
     return jsonify(position)
 
 
-@app.route("/startships/<int:position>", methods=["DELETE"])
+@app.route("/startships/<int:starships_id>", methods=["DELETE"])
 def delete_startship(position):
     print("delete starships in position " + position)
     return jsonify(position)
