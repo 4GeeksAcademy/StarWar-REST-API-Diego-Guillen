@@ -155,16 +155,56 @@ def add_planets(planet_id):
     
 
 
-@app.route("/users/favorites/people/<int:person_id>", methods=["POST"])
-def add_people():
-    response_body = request.get_json()
+@app.route("/users/favorites/people/<int:people_id>", methods=["POST"])
+def add_people(people_id):
+    body = request.get_json()
+    username = request.json.get("username", None)
+    people_body = body.get("people_id", [])    
+    user_list = User.query.filter_by(username=username).first()
+    if user_list is None:
+        return {"message": f"user {username} doesn't exist."}, 400
+    for x in people_body:
+        people_list = People.query.filter_by(id=x).first()
+        if people_list is None:
+            return {"message": f"planet {x} doesn't exist."}, 400     
+   
+    current_favorite = Favorites.query.filter_by(user=user_list).first()     
+    for x in people_body:
+        current_favorite.people.append(People.query.filter_by(id=x).first())  
+    #return {"message": f"people {current_favorite.people} has been added successfully."}, 200
+    #return jsonify(current_favorite.serialize()), 200     
+    try:
+        #db.session.add(favorite)  
+        db.session.commit()
+        return {"message": f"people {current_favorite.people} has been added successfully."}, 200
+    except Exception as error:
+        return {"message": f"people {current_favorite.people} has not been added successfully."}, 400
 
 
-@app.route("/users/favorites/startships/<int:starship_id>", methods=["POST"])
-def add_startships():
-    response_body = request.get_json()
-
-    return jsonify(response_body), 200
+@app.route("/users/favorites/starships/<int:starship_id>", methods=["POST"])
+def add_starships(starship_id):
+    body = request.get_json()
+    username = request.json.get("username", None)
+    starships_body = body.get("starship_id", [])    
+    user_list = User.query.filter_by(username=username).first()
+    if user_list is None:
+        return {"message": f"user {username} doesn't exist."}, 400
+    for x in starships_body:
+        starships_list = Starships.query.filter_by(id=x).first()
+        if starships_list is None:
+            return {"message": f"Starship {x} doesn't exist."}, 400     
+   
+    current_favorite = Favorites.query.filter_by(user=user_list).first()     
+    for x in starships_body:
+        current_favorite.starships.append(Starships.query.filter_by(id=x).first())  
+    #return {"message": f"starships {starships_body} has been added successfully."}, 200
+    #return jsonify(current_favorite.serialize()), 200     
+    try:
+        #db.session.add(favorite)  
+        db.session.commit()
+        return {"message": f"startships {current_favorite.starships} has been added successfully."}, 200
+    except Exception as error:
+        return {"message": f"startships {current_favorite.starships} has not been added successfully."}, 400
 
 
 # DELETE Methods
