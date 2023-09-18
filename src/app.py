@@ -115,19 +115,36 @@ def starship_get(starship_id):
 # POST Methods
 @app.route("/users", methods=["POST"])
 def add_user():
-    response_body = request.get_json()
-    data = request.json
-    user = User(
-        username=data["username"],
-        password=data["password"],
-        firstname=data["firstname"],
-        lastname=data["lastname"],
-        email=data["email"],
-        is_active=True,
-    )
-    db.session.add(user)
-    db.session.commit()
-    return {"message": f"user {user.username} has been created successfully."}, 200
+    data = request.get_json()
+    if data is None:
+        return {"message": "The request body is null"}, 400
+    if data["username"] is None:
+        return {"message": "The request body is missing the username"}, 400
+    if data["password"] is None:
+        return {"message": "The request body is missing the password"}, 400
+    if data["firstname"] is None:
+        return {"message": "The request body is missing the firstname"}, 400
+    if data["lastname"] is None:
+        return {"message": "The request body is missing the lastname"}, 400
+    if data["email"] is None:
+        return {"message": "The request body is missing the email"}, 400  
+    if User.query.filter_by(username=data["username"]).first() is not None:
+        return {"message": f"user {data['username']} already exists."}, 400
+    try:
+        user = User(
+            username=data["username"],
+            password=data["password"],
+            firstname=data["firstname"],
+            lastname=data["lastname"],
+            email=data["email"],
+            is_active=True,
+        )
+        db.session.add(user)
+        db.session.commit()
+        return {"message": f"user {user.username} has been created successfully."}, 200
+    except Exception as error:
+        return {"message": f"user {user.username} has not been created successfully."}, 400  
+    
    
 
 @app.route("/users/favorites/planets/<int:planet_id>", methods=["POST"])
