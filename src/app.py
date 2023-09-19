@@ -334,7 +334,8 @@ def add_planets(planet_id):
    
     current_favorite = Favorites.query.filter_by(user=user).first()     
    
-    current_favorite.planets.append(Planets.query.filter_by(id=planet_body).first())      
+    current_favorite.planets.append(Planets.query.filter_by(id=planet_body).first())  
+    #return {"message": f"planet {planet} has been added successfully."}, 200    
     try:
         #db.session.add(favorite)  
         #return {"message": f"planet {current_favorite.planets} has been added successfully."}, 200
@@ -352,9 +353,9 @@ def add_people(people_id):
     user_list = User.query.filter_by(username=username).first()
     if user_list is None:
         return {"message": f"user {username} doesn't exist."}, 400
-    person = Planets.query.filter_by(id=people_body).first()
+    person = People.query.filter_by(id=people_body).first()
     if person is None:
-        return {"message": f"planet {people_body} doesn't exist."}, 400     
+        return {"message": f"people {people_body} doesn't exist."}, 400     
    
     current_favorite = Favorites.query.filter_by(user=user_list).first()     
    
@@ -378,14 +379,14 @@ def add_starships(starship_id):
     user_list = User.query.filter_by(username=username).first()
     if user_list is None:
         return {"message": f"user {username} doesn't exist."}, 400
-    starship = Planets.query.filter_by(id=starships_body).first()
+    starship = Starships.query.filter_by(id=starships_body).first()
     if starship is None:
-        return {"message": f"planet {starships_body} doesn't exist."}, 400     
+        return {"message": f"starship {starships_body} doesn't exist."}, 400     
    
     current_favorite = Favorites.query.filter_by(user=user_list).first()     
     
     current_favorite.starships.append(Starships.query.filter_by(id=starships_body).first())  
-    #return {"message": f"starships {starships_body} has been added successfully."}, 200
+    #return {"message": f"starships {starship} has been added successfully."}, 200
     #return jsonify(current_favorite.serialize()), 200     
     try:
         #db.session.add(favorite)  

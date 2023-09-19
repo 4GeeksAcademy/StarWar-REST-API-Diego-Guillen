@@ -4,10 +4,9 @@
 
     -[POST] /filldatabase
 
-        * send JSON Body srat = "run" what page you want to fetch and save on DB and what API you want to Pull from the API
+        * send JSON Body start = "run" what page you want to pull to save on DB and what API name that you want to Pull from the API
        
-        Warning *** Due to there End point is just to fill with data the DB There's not any validation about if data if already on the DB, so 
-        pay attention what data are you put in on the DB iT can be duplicate****
+        Warning *** Due to there's an end point just to fill with data the DB There's any validation about existing data on the DB if the data if already on the DB It will be duplicate the same register with a diferent ID, so pay attention what data are you put It in in the DB before send the request or you will duplicate data and need to be remove on Admin web page****
 
         {
         "start": "run",

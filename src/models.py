@@ -147,13 +147,13 @@ class Planets(db.Model):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-    rotation_period = db.Column(db.Integer, nullable=False)
-    orbital_period = db.Column(db.Integer, nullable=False)
-    diameter = db.Column(db.Integer, nullable=False)
-    climate = db.Column(db.String(30), nullable=False)
-    gravity = db.Column(db.String(10), nullable=False)
-    terrain = db.Column(db.String(30), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    rotation_period = db.Column(db.String(100), nullable=False)
+    orbital_period = db.Column(db.String(100), nullable=False)
+    diameter = db.Column(db.String(100), nullable=False)
+    climate = db.Column(db.String(100), nullable=False)
+    gravity = db.Column(db.String(100), nullable=False)
+    terrain = db.Column(db.String(100), nullable=False)
     population = db.Column(db.String(250))
 
     def __init(
@@ -197,13 +197,13 @@ class Planets(db.Model):
 class Starships(db.Model):
     __tablename__ = "starships"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-    model = db.Column(db.String(60), nullable=False)
-    manufacturer = db.Column(db.String(90), nullable=False)
-    length = db.Column(db.Integer, nullable=False)
-    max_atmosphering_speed = db.Column(db.String(30), nullable=False)
-    crew = db.Column(db.Integer, nullable=False)
-    passengers = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    model = db.Column(db.String(100), nullable=False)
+    manufacturer = db.Column(db.String(100), nullable=False)
+    length = db.Column(db.String(100), nullable=False)
+    max_atmosphering_speed = db.Column(db.String(60), nullable=False)
+    crew = db.Column(db.String(100), nullable=False)
+    passengers = db.Column(db.String(100), nullable=False)
     starship_class = db.Column(db.String(100), nullable=False)
 
     def __init__(
