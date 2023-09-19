@@ -17,7 +17,7 @@ from models import People, db
 
 
 r = requests.get(
-    "https://www.swapi.tech/api/people?page=1&limit=10",
+    "https://www.swapi.tech/api/people?page=2&limit=10",
     headers={"Accept": "application/json"},
 )
 
@@ -40,8 +40,7 @@ insert_people = People(
     description=people_data["description"],
     starships="none",
 )
-
+print(insert_people.name)
 db.session.add(insert_people)
 db.session.commit()
 
-print(insert_people.name)
