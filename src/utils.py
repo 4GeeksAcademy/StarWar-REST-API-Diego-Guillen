@@ -38,4 +38,30 @@ def generate_sitemap(app):
         <p>API HOST: <script>document.write('<input style="padding: 5px; width: 300px" type="text" value="'+window.location.href+'" />');</script></p>
         <p>Start working on your proyect by following the <a href="https://start.4geeksacademy.com/starters/flask" target="_blank">Quick Start</a></p>
         <p>Remember to specify a real endpoint path like: </p>
-        <ul style="text-align: left;">"""+links_html+"</ul></div>"
+        <ul style="text-align: left;">
+        <h1># StarWar API</h1>
+            <h2>#Fill DB</h2>
+            <h2> -[POST] /filldatabase</h2>
+            <p> * send JSON Body start = &quot;run&quot; what page you want to pull to save on DB and what API name that you want to Pull from the API    Warning *** Due to there's an end point just to fill with data the DB There's any validation about existing data on the DB if the data if already on the DB It will be duplicate the same register with a diferent ID, so pay attention what data are you put It in in the DB before send the request or you will duplicate data and need to be remove on Admin web page****</p><br>
+            <p> {  &quot;start&quot;: &quot;run&quot;,  &quot;page&quot;: number less than 9,  &quot;api_name&quot;: &quot;people or planets or startships&quot;  }</p><br>
+            <h2># GET Methods</h2>
+            <p> - [GET] /users -> Get a list of all the blog post user  - [GET] /users/favorites -> Get all the favorites  - [GET] /people Get a list of all the people in the database  - [GET] /people/<int:people_id> Get one single people infomation  - [GET] /planets Get a list of all the planets in the database  - [GET] /planets/<int:planets_id> Get one single planets infomation  - [GET] /starships Get a list of all the starships in the database  - [GET] /starships/<int:starships_id> Get one single starships infomation</p><br>
+            <h2># POST Methods</h2>
+            <h3># Create a user</h2>
+            <p> - [POST] /users -> create a user  * send JSON with below body information  {  &quot;username&quot;: &quot;username&quot;,  &quot;password&quot;: &quot;password&quot;,  &quot;firstname&quot;: &quot;firstname&quot;,  &quot;lastname&quot;: &quot;lastname&quot;,  &quot;email&quot;: &quot;email&quot;  }</p><br>
+            <h3><!-- # Create a Favorite for a user</h3>
+            <p> - [POST] /users/favorites -> create a favorite for a specific user  * send JSON with below body information  {  &quot;username&quot;: &quot;usename&quot;,  &quot;people_id&quot;: [people id],  &quot;planet_id&quot;: [planets id],  &quot;starship_id&quot;: [starships id]  } --></p><br>
+            <h3># Add a Favorite person for a user</h3>
+            <p> - [POST] /users/favorites/people/<int:people_id>  * send JSON with the username where the people favorite will be added  {  &quot;username&quot;: &quot;username&quot;  } # Add a Favorite planet for a user</p><br>
+            <p> - [POST] /users/favorites/planets/<int:planet_id>  * send JSON with the username where the planet favorite will be added  {  &quot;username&quot;: &quot;username&quot;  }</p><br>
+            <h3># Add a Favorite Starship for a user</h3>
+            <p> - [POST] /users/favorites/startships/<int:starship_id>  * send JSON with the username where the starship favorite will be added  {  &quot;username&quot;: &quot;username&quot;  }</p><br>
+            <h3># Delete a Favorite person for a user</h3>
+            <p> - [DELETE] /people/<int:people_id>  * send JSON with the username where the people favorite will be delete  {  &quot;username&quot;: &quot;username&quot;  } # Delete a Favorite planet for a user</p><br>
+            <p> - [DELETE] /planets/<int:planet_id>  * send JSON with the username where the planet favorite will be delete  {  &quot;username&quot;: &quot;username&quot;  }</p><br>
+            <h3># Delete a Favorite Starship for a user</p>
+            <p> - [DELETE] /startships/<int:starship_id>  * send JSON with the username where the starship favorite will be delete  {  &quot;username&quot;: &quot;username&quot;  }</p><br>
+        """+links_html+"</ul></div>"
+
+        
+        
