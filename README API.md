@@ -1,5 +1,20 @@
 # StarWar API
 
+#Fill DB
+
+    -[POST] /filldatabase
+
+        * send JSON Body srat = "run" what page you want to fetch and save on DB and what API you want to Pull from the API
+       
+        Warning *** Due to there End point is just to fill with data the DB There's not any validation about if data if already on the DB, so 
+        pay attention what data are you put in on the DB iT can be duplicate****
+
+        {
+        "start": "run",
+        "page": number less than 9,
+        "api_name": "people or planets or startships"
+        }
+
 # GET Methods
 
     - [GET] /users -> Get a list of all the blog post user

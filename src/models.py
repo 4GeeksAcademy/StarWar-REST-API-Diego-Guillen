@@ -65,7 +65,7 @@ class People(db.Model):
     eye_color = db.Column(db.String(15), nullable=False)
     birth_year = db.Column(db.String(15), nullable=False)
     gender = db.Column(db.String(25), nullable=False)
-    home_world = db.Column(db.String(20), nullable=False)
+    home_world = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(500), nullable=False)
     starships = db.Column(db.String(15), nullable=False)
 

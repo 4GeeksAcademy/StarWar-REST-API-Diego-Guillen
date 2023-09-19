@@ -9,6 +9,7 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User, People, Planets, Starships, Favorites
+import requests
 
 # from models import Person
 
@@ -149,6 +150,108 @@ def starship_get(starship_id):
 
 
 # POST Methods
+
+@app.route("/filldatbase", methods=["POST"])
+def fill_database():
+    body_data = request.get_json()
+    if body_data is None:
+        return {"message": "body is empty"}, 400
+    if body_data["start"] != "run" or body_data["page"] > 9 or body_data["api_name"] not in ["planets", "people", "starships"]:
+        return {"message": "wrong parameter"}, 400
+    r = requests.get(
+        f"https://www.swapi.tech/api/{body_data['api_name']}?page={body_data['page']}&limit=10",
+        headers={"Accept": "application/json"},
+    )
+    data = r.json()["results"]   
+    object_data=[]
+    urls = [url["url"] for url in data]
+    for url in urls:
+        object_data.append(requests.get(url).json()["result"])  
+  
+    #return jsonify(object_data), 200
+    def insert_row_people(name, height, skin_color, hair_color, eye_color, birth_year, gender, home_world, description, starships):
+        insert_people = People(
+            name=name,
+            height=height,
+            skin_color=skin_color,
+            hair_color=hair_color,
+            eye_color=eye_color,
+            birth_year=birth_year,
+            gender=gender,
+            home_world=home_world,
+            description=description,
+            starships=starships,
+        )
+        return insert_people
+    def insert_row_planets(name, rotation_period, orbital_period, diameter, climate, gravity, terrain, population):
+        insert_planets = Planets(
+            name=name,
+            rotation_period=rotation_period,
+            orbital_period=orbital_period,
+            diameter=diameter,
+            climate=climate,
+            gravity=gravity,
+            terrain=terrain,
+            population=population         
+        )
+        return insert_planets
+    def insert_row_starships(name, model, manufacturer, length, max_atmosphering_speed, crew, passengers, starship_class):
+        insert_starship = Starships(
+            name=name,
+            model=model,
+            manufacturer=manufacturer,
+            length=length,
+            max_atmosphering_speed=max_atmosphering_speed,
+            crew=crew,
+            passengers=passengers,
+            starship_class=starship_class         
+        )
+        return insert_starship
+    objects = []
+    if body_data["api_name"] == 'people':    
+        objects = [insert_row_people(person["properties"]["name"],
+                                    person["properties"]["height"],
+                                    person["properties"]["skin_color"],
+                                    person["properties"]["hair_color"],
+                                    person["properties"]["eye_color"],
+                                    person["properties"]["birth_year"],
+                                    person["properties"]["gender"],
+                                    person["properties"]["homeworld"],
+                                    person["description"],
+                                    starships="none") 
+                                    for person in object_data]
+    elif body_data["api_name"] == 'planets':
+        objects = [insert_row_planets(planet["properties"]["name"],
+                                    planet["properties"]["rotation_period"],
+                                    planet["properties"]["orbital_period"],
+                                    planet["properties"]["diameter"],
+                                    planet["properties"]["climate"],
+                                    planet["properties"]["gravity"],
+                                    planet["properties"]["terrain"],
+                                    planet["properties"]["population"])                             
+                                    for planet in object_data]
+    elif body_data["api_name"] == 'starships':
+        objects = [insert_row_starships(starship["properties"]["name"],
+                                    starship["properties"]["model"],
+                                    starship["properties"]["manufacturer"],
+                                    starship["properties"]["length"],
+                                    starship["properties"]["max_atmosphering_speed"],
+                                    starship["properties"]["crew"],
+                                    starship["properties"]["passengers"],
+                                    starship["properties"]["starship_class"])                            
+                                    for starship in object_data]
+        
+    #return jsonify([object.serialize() for object in objects]),200
+    try:
+
+        db.session.add_all(objects)
+        db.session.commit()
+        return{"message": "data added to the DB successfully.}"}, 200
+    
+    except Exception as error:
+        return {"message": f"unable to save into the DB, err = {error}"}, 400   
+
+
 @app.route("/users", methods=["POST"])
 def add_user():
     data = request.get_json()

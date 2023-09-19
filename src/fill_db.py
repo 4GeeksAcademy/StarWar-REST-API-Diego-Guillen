@@ -1,19 +1,5 @@
 import requests
-from models import People, db
-
-# def __init__(
-#     self,
-#     name,
-#     height,
-#     skin_color,
-#     hair_color,
-#     eye_color,
-#     birth_year,
-#     gender,
-#     home_world,
-#     description,
-#     starships,
-# ):
+from models import People
 
 
 r = requests.get(
@@ -40,7 +26,5 @@ insert_people = People(
     description=people_data["description"],
     starships="none",
 )
-print(insert_people.name)
-db.session.add(insert_people)
-db.session.commit()
+
 
